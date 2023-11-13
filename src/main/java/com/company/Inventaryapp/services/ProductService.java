@@ -1,7 +1,8 @@
 package com.company.Inventaryapp.services;
 
 import com.company.Inventaryapp.repositories.ProductRepository;
-import com.company.inventaryapp.models.Product;
+
+import com.company.Inventaryapp.models.Product;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,31 +11,46 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProductService {
 
-    @Autowired
-    private ProductRepository productRepository;
-//Obtiene todos los productos
+    private final ProductRepository productRepository;
 
-    public List<Product> getAllProducts() {
+    @Autowired
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
+
+    // Creamos el producto
+    public Product create(String name, Double price) {
+        // Validar los datos de entrada
+        validateName(name);
+        validatePrice(price);
+
+        // Crear un nuevo objeto Product
+        Product newProduct = new Product();
+        newProduct.setName(name);
+        newProduct.setPrice(price);
+
+        // Guardar el nuevo producto en la base de datos
+        productRepository.save(newProduct);
+        return newProduct;
+    }
+
+    // Obtiene todos los productos
+    public List<Product> getAll() {
         return productRepository.findAll();
     }
-//Obtiene todos los productos por id
 
-    public Optional<Product> getProductById(Long id) {
-        return productRepository.findProductById(id);
+    // Obtiene un producto por ID
+    public Optional<Product> getById(Long id) {
+        return productRepository.findById(id);
     }
-//Obtiene todos los productos por su nombre
 
-    public List<Product> getProductsByName(String name) {
+    // Obtiene todos los productos por su nombre
+    public List<Product> getByName(String name) {
         return productRepository.findProductsByName(name);
     }
-//Guarda un nuevo producto
 
-    public Product saveProduct(Product product) {
-        return productRepository.save(product);
-    }
-//Actualiza un producto    
-
-    public Product updateProduct(Long id, Product updatedProduct) {
+    // Actualiza un producto
+    public Product update(Long id, Product updatedProduct) {
         Optional<Product> existingProductOptional = productRepository.findById(id);
 
         if (existingProductOptional.isPresent()) {
@@ -48,9 +64,9 @@ public class ProductService {
             throw new IllegalArgumentException("Product not found with id: " + id);
         }
     }
-//Elimina un producto     
 
-    public void deleteProduct(Long id) {
+    // Elimina un producto
+    public void delete(Long id) {
         Optional<Product> productOptional = productRepository.findById(id);
 
         if (productOptional.isPresent()) {
@@ -60,16 +76,17 @@ public class ProductService {
             throw new IllegalArgumentException("Product not found with id: " + id);
         }
     }
-//Elimina un producto por su nombre     
 
-    public void deleteProductByName(String name) {
-        List<Product> productsToDelete = productRepository.findProductsByName(name);
+    // Métodos de validación
+    private void validateName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Name is required");
+        }
+    }
 
-        if (!productsToDelete.isEmpty()) {
-            productRepository.deleteAll(productsToDelete);
-        } else {
-            // Manejo de error: No se encontraron productos con el nombre dado
-            throw new IllegalArgumentException("No products found with name: " + name);
+    private void validatePrice(Double price) {
+        if (price == null || price <= 0) {
+            throw new IllegalArgumentException("Price must be greater than 0");
         }
     }
 }

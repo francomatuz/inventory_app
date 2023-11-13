@@ -1,6 +1,9 @@
-package com.company.inventaryapp.models;
+package com.company.Inventaryapp.models;
 
+import com.company.Inventaryapp.enums.ProductCategory;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,6 +18,8 @@ public class Product {
     private double price;
 
     // Constructor, getters y setters (puedes generarlos automáticamente en tu IDE)
+      @Enumerated(EnumType.STRING)
+    private ProductCategory category;
 
     public Product() {
         

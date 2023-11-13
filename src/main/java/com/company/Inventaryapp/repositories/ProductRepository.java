@@ -1,6 +1,6 @@
 
 package com.company.Inventaryapp.repositories;
-import com.company.inventaryapp.models.Product;
+import com.company.Inventaryapp.models.Product;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
