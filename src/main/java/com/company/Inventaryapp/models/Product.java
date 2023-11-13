@@ -21,6 +21,14 @@ public class Product {
       @Enumerated(EnumType.STRING)
     private ProductCategory category;
 
+    public ProductCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(ProductCategory category) {
+        this.category = category;
+    }
+
     public Product() {
         
     }

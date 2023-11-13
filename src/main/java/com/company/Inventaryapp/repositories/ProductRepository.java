@@ -20,5 +20,4 @@ public interface ProductRepository extends JpaRepository<Product, Long>{
      // Encuentra un producto por su ID usando JPQL
     @Query("SELECT p FROM Product p WHERE p.id = :id")
     Optional<Product> findProductById(@Param("id") Long id);
-
 }

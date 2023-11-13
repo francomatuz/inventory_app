@@ -1,12 +1,13 @@
 package com.company.Inventaryapp.services;
 
-import com.company.Inventaryapp.repositories.ProductRepository;
-
+import com.company.Inventaryapp.enums.ProductCategory;
 import com.company.Inventaryapp.models.Product;
-import java.util.List;
-import java.util.Optional;
+import com.company.Inventaryapp.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -18,45 +19,34 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    // Creamos el producto
-    public Product create(String name, Double price) {
-        // Validar los datos de entrada
-        validateName(name);
-        validatePrice(price);
+public Product createProduct(Product newProduct) {
+    validateName(newProduct.getName());
+    validatePrice(newProduct.getPrice());
 
-        // Crear un nuevo objeto Product
-        Product newProduct = new Product();
-        newProduct.setName(name);
-        newProduct.setPrice(price);
+    productRepository.save(newProduct);
+    return newProduct;
+}
 
-        // Guardar el nuevo producto en la base de datos
-        productRepository.save(newProduct);
-        return newProduct;
-    }
-
-    // Obtiene todos los productos
-    public List<Product> getAll() {
+    public List<Product> getAllProduct() {
         return productRepository.findAll();
     }
 
-    // Obtiene un producto por ID
-    public Optional<Product> getById(Long id) {
+    public Optional<Product> getProductById(Long id) {
         return productRepository.findById(id);
     }
 
-    // Obtiene todos los productos por su nombre
-    public List<Product> getByName(String name) {
+    public List<Product> getProductByName(String name) {
         return productRepository.findProductsByName(name);
     }
 
-    // Actualiza un producto
-    public Product update(Long id, Product updatedProduct) {
+    public Product updateProduct(Long id, Product updatedProduct) {
         Optional<Product> existingProductOptional = productRepository.findById(id);
 
         if (existingProductOptional.isPresent()) {
             Product existingProduct = existingProductOptional.get();
             existingProduct.setName(updatedProduct.getName());
             existingProduct.setPrice(updatedProduct.getPrice());
+            existingProduct.setCategory(updatedProduct.getCategory());
             // Puedes actualizar más campos según tus necesidades
             return productRepository.save(existingProduct);
         } else {
@@ -65,8 +55,7 @@ public class ProductService {
         }
     }
 
-    // Elimina un producto
-    public void delete(Long id) {
+    public void deleteProduct(Long id) {
         Optional<Product> productOptional = productRepository.findById(id);
 
         if (productOptional.isPresent()) {
@@ -77,7 +66,6 @@ public class ProductService {
         }
     }
 
-    // Métodos de validación
     private void validateName(String name) {
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Name is required");
